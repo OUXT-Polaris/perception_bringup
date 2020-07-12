@@ -19,15 +19,12 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(scan_segmentation REQUIRED)
+find_package(image_processing_utils REQUIRED)
 
-add_executable(perception_bringup src/perception_bringup.cpp)
-ament_target_dependencies(perception_bringup
-  rclcpp
-  scan_segmentation)
-
-install(TARGETS
-  perception_bringup
-  DESTINATION lib/${PROJECT_NAME}
+install(DIRECTORY
+  launch
+  config
+  DESTINATION share/${PROJECT_NAME}/
 )
 
 if(BUILD_TESTING)
