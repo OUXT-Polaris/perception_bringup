@@ -1,0 +1,9 @@
+repositories:
+  scan_segmentation:
+    url: https://github.com/OUXT-Polaris/scan_segmentation.git
+    type: git
+    version: master
+  image_processing_utils:
+    url: https://github.com/OUXT-Polaris/image_processing_utils.git
+    type: git
+    version: master
