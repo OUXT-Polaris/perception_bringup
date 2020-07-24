@@ -30,11 +30,30 @@ def generate_launch_description():
             package='rclcpp_components',
             node_executable='component_container_mt',
             composable_node_descriptions=[
-                getImageDecompressorComponent('front_camera')
+                getImageDecompressorComponent('front_camera'),
+                getImageRectifyComponent('front_camera'),
+                getPointCloudToLaserScanComponent('front_velodyne')
             ],
             output='screen',
     )
     return launch.LaunchDescription([container])
+
+
+def getPointCloudToLaserScanComponent(lidar_name):
+    config_directory = os.path.join(
+        ament_index_python.packages.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, lidar_name+'_pointcloud_to_laserscan.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)[lidar_name + '_pointcloud_to_laserscan_node']['ros__parameters']
+    component = ComposableNode(
+        package='pointcloud_to_laserscan',
+        node_plugin='pointcloud_to_laserscan::LaserScanToPointCloudNode',
+        node_namespace='/'+lidar_name,
+        node_name='pointcloud_to_laserscan_node',
+        remappings=[("cloud", "points_raw")],
+        parameters=[params])
+    return component
 
 
 def getImageDecompressorComponent(camera_name):
@@ -50,4 +69,15 @@ def getImageDecompressorComponent(camera_name):
         node_namespace='/'+camera_name,
         node_name='image_decompressor_node',
         parameters=[params])
+    return component
+
+
+def getImageRectifyComponent(camera_name):
+    component = ComposableNode(
+        package='image_processing_utils',
+        node_plugin='image_processing_utils::ImageRectifyComponent',
+        node_namespace='/'+camera_name,
+        node_name='image_rectify_node',
+        remappings=[("image", "image_raw")],
+        parameters=[])
     return component
