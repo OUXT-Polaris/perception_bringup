@@ -31,6 +31,7 @@ def generate_launch_description():
             node_executable='component_container_mt',
             composable_node_descriptions=[
                 getImageDecompressorComponent('front_camera'),
+                getImageRectifyComponent('front_camera'),
                 getPointCloudToLaserScanComponent('front_velodyne')
             ],
             output='screen',
@@ -68,4 +69,15 @@ def getImageDecompressorComponent(camera_name):
         node_namespace='/'+camera_name,
         node_name='image_decompressor_node',
         parameters=[params])
+    return component
+
+
+def getImageRectifyComponent(camera_name):
+    component = ComposableNode(
+        package='image_processing_utils',
+        node_plugin='image_processing_utils::ImageRectifyComponent',
+        node_namespace='/'+camera_name,
+        node_name='image_rectify_node',
+        remappings=[("image", "image_raw")],
+        parameters=[])
     return component
