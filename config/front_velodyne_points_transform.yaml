@@ -1,0 +1,5 @@
+front_velodyne_points_transform_node:
+    ros__parameters:
+        output_frame_id: "base_link"
+        input_topic : "/perception/front_velodyne/points_raw"
+        output_topic: "/perception/front_velodyne/points_raw/transformed"
