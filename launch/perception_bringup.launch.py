@@ -32,11 +32,64 @@ def generate_launch_description():
             composable_node_descriptions=[
                 getImageDecompressorComponent('front_camera'),
                 getImageRectifyComponent('front_camera'),
-                getPointCloudToLaserScanComponent('front_velodyne')
+                getPointsTransformComponent('front_velodyne'),
+                getPointCloudToLaserScanComponent('front_velodyne'),
+                getScanSgementationComponent('front_velodyne')
             ],
             output='screen',
     )
     return launch.LaunchDescription([container])
+
+
+def getPointsTransformComponent(lidar_name):
+    config_directory = os.path.join(
+        ament_index_python.packages.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, lidar_name+'_points_transform.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)[lidar_name + '_points_transform_node']['ros__parameters']
+    component = ComposableNode(
+        package='pcl_apps',
+        node_plugin='pcl_apps::PointsTransformComponent',
+        node_namespace='/perception/'+lidar_name,
+        node_name='points_transform_node',
+        remappings=[("input", lidar_name+"/points_raw"), ("output", "points_raw/transformed")],
+        parameters=[params])
+    return component
+
+
+def getScanSgementationComponent(lidar_name):
+    config_directory = os.path.join(
+        ament_index_python.packages.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, lidar_name+'_scan_segmentation.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)[lidar_name + '_scan_segmentation_node']['ros__parameters']
+    component = ComposableNode(
+        package='scan_segmentation',
+        node_plugin='scan_segmentation::ScanSegmentationComponent',
+        node_namespace='/perception/'+lidar_name,
+        node_name='scan_segmentation_node',
+        remappings=[],
+        parameters=[params])
+    return component
+
+
+def getCropBoxFilterComponent(lidar_name):
+    config_directory = os.path.join(
+        ament_index_python.packages.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, 'crop_box_filter.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)['crop_box_filter_node']['ros__parameters']
+    component = ComposableNode(
+        package='pcl_apps',
+        node_plugin='pcl_apps::CropBoxFilterComponent',
+        node_namespace='/perception/'+lidar_name,
+        node_name='crop_box_filter_node',
+        remappings=[("points", "points_raw/transformed")],
+        parameters=[params])
+    return component
 
 
 def getPointCloudToLaserScanComponent(lidar_name):
@@ -48,10 +101,10 @@ def getPointCloudToLaserScanComponent(lidar_name):
         params = yaml.safe_load(f)[lidar_name + '_pointcloud_to_laserscan_node']['ros__parameters']
     component = ComposableNode(
         package='pointcloud_to_laserscan',
-        node_plugin='pointcloud_to_laserscan::LaserScanToPointCloudNode',
-        node_namespace='/'+lidar_name,
+        node_plugin='pointcloud_to_laserscan::PointCloudToLaserScanNode',
+        node_namespace='/perception/'+lidar_name,
         node_name='pointcloud_to_laserscan_node',
-        remappings=[("cloud", "points_raw")],
+        remappings=[("cloud_in", "points_raw/transformed")],
         parameters=[params])
     return component
 
@@ -66,7 +119,7 @@ def getImageDecompressorComponent(camera_name):
     component = ComposableNode(
         package='image_processing_utils',
         node_plugin='image_processing_utils::ImageDecompressorComponent',
-        node_namespace='/'+camera_name,
+        node_namespace='/perception/'+camera_name,
         node_name='image_decompressor_node',
         parameters=[params])
     return component
@@ -76,7 +129,7 @@ def getImageRectifyComponent(camera_name):
     component = ComposableNode(
         package='image_processing_utils',
         node_plugin='image_processing_utils::ImageRectifyComponent',
-        node_namespace='/'+camera_name,
+        node_namespace='/perception/'+camera_name,
         node_name='image_rectify_node',
         remappings=[("image", "image_raw")],
         parameters=[])
