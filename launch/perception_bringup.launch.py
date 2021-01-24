@@ -28,13 +28,17 @@ def generate_launch_description():
             node_name='preception_bringup_container',
             node_namespace='perception',
             package='rclcpp_components',
-            node_executable='component_container_mt',
+            node_executable='component_container',
             composable_node_descriptions=[
-                getImageDecompressorComponent('front_camera'),
-                getImageRectifyComponent('front_camera'),
-                getPointsTransformComponent('front_velodyne'),
-                getPointCloudToLaserScanComponent('front_velodyne'),
-                getScanSgementationComponent('front_velodyne')
+                # getImageDecompressorComponent('front_camera'),
+                # getImageRectifyComponent('front_camera'),
+                # getPointsTransformComponent('front_lidar'),
+                # getPointCloudToLaserScanComponent('front_lidar'),
+                # getScanSgementationComponent('front_lidar'),
+                getRadiusOutlierRemovalComponent('front_lidar'),
+                getRadiusOutlierRemovalComponent('rear_lidar'),
+                getRadiusOutlierRemovalComponent('right_lidar'),
+                getRadiusOutlierRemovalComponent('left_lidar')
             ],
             output='screen',
     )
@@ -50,9 +54,9 @@ def getPointsTransformComponent(lidar_name):
         params = yaml.safe_load(f)[lidar_name + '_points_transform_node']['ros__parameters']
     component = ComposableNode(
         package='pcl_apps',
-        node_plugin='pcl_apps::PointsTransformComponent',
-        node_namespace='/perception/'+lidar_name,
-        node_name='points_transform_node',
+        plugin='pcl_apps::PointsTransformComponent',
+        namespace='/perception/'+lidar_name,
+        name='points_transform_node',
         remappings=[("input", lidar_name+"/points_raw"), ("output", "points_raw/transformed")],
         parameters=[params])
     return component
@@ -67,9 +71,9 @@ def getScanSgementationComponent(lidar_name):
         params = yaml.safe_load(f)[lidar_name + '_scan_segmentation_node']['ros__parameters']
     component = ComposableNode(
         package='scan_segmentation',
-        node_plugin='scan_segmentation::ScanSegmentationComponent',
-        node_namespace='/perception/'+lidar_name,
-        node_name='scan_segmentation_node',
+        plugin='scan_segmentation::ScanSegmentationComponent',
+        namespace='/perception/'+lidar_name,
+        name='scan_segmentation_node',
         remappings=[],
         parameters=[params])
     return component
@@ -84,9 +88,9 @@ def getCropBoxFilterComponent(lidar_name):
         params = yaml.safe_load(f)['crop_box_filter_node']['ros__parameters']
     component = ComposableNode(
         package='pcl_apps',
-        node_plugin='pcl_apps::CropBoxFilterComponent',
-        node_namespace='/perception/'+lidar_name,
-        node_name='crop_box_filter_node',
+        plugin='pcl_apps::CropBoxFilterComponent',
+        namespace='/perception/'+lidar_name,
+        name='crop_box_filter_node',
         remappings=[("points", "points_raw/transformed")],
         parameters=[params])
     return component
@@ -101,10 +105,26 @@ def getPointCloudToLaserScanComponent(lidar_name):
         params = yaml.safe_load(f)[lidar_name + '_pointcloud_to_laserscan_node']['ros__parameters']
     component = ComposableNode(
         package='pointcloud_to_laserscan',
-        node_plugin='pointcloud_to_laserscan::PointCloudToLaserScanNode',
-        node_namespace='/perception/'+lidar_name,
-        node_name='pointcloud_to_laserscan_node',
+        plugin='pointcloud_to_laserscan::PointCloudToLaserScanNode',
+        namespace='/perception/'+lidar_name,
+        name='pointcloud_to_laserscan_node',
         remappings=[("cloud_in", "points_raw/transformed")],
+        parameters=[params])
+    return component
+
+
+def getRadiusOutlierRemovalComponent(lidar_name):
+    config_directory = os.path.join(
+        ament_index_python.packages.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, lidar_name+'_radius_outlier_removal.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)[lidar_name + '_radius_outlier_removal_node']['ros__parameters']
+    component = ComposableNode(
+        package='pcl_apps',
+        plugin='pcl_apps::RadiusOutlierRemovalComponent',
+        namespace='/perception/'+lidar_name,
+        name='radius_outlier_removal_node',
         parameters=[params])
     return component
 
@@ -118,9 +138,9 @@ def getImageDecompressorComponent(camera_name):
         params = yaml.safe_load(f)[camera_name+'_image_decompressor_node']['ros__parameters']
     component = ComposableNode(
         package='image_processing_utils',
-        node_plugin='image_processing_utils::ImageDecompressorComponent',
-        node_namespace='/perception/'+camera_name,
-        node_name='image_decompressor_node',
+        plugin='image_processing_utils::ImageDecompressorComponent',
+        namespace='/perception/'+camera_name,
+        name='image_decompressor_node',
         parameters=[params])
     return component
 
@@ -128,9 +148,9 @@ def getImageDecompressorComponent(camera_name):
 def getImageRectifyComponent(camera_name):
     component = ComposableNode(
         package='image_processing_utils',
-        node_plugin='image_processing_utils::ImageRectifyComponent',
-        node_namespace='/perception/'+camera_name,
-        node_name='image_rectify_node',
+        plugin='image_processing_utils::ImageRectifyComponent',
+        namespace='/perception/'+camera_name,
+        name='image_rectify_node',
         remappings=[("image", "image_raw")],
         parameters=[])
     return component
