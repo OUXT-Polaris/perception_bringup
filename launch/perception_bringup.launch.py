@@ -32,9 +32,9 @@ def generate_launch_description():
             composable_node_descriptions=[
                 getImageDecompressorComponent('front_camera'),
                 getImageRectifyComponent('front_camera'),
-                getPointsTransformComponent('front_velodyne'),
-                getPointCloudToLaserScanComponent('front_velodyne'),
-                getScanSgementationComponent('front_velodyne')
+                getPointsTransformComponent('front_lidar'),
+                getPointCloudToLaserScanComponent('front_lidar'),
+                getScanSgementationComponent('front_lidar')
             ],
             output='screen',
     )
