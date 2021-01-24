@@ -28,13 +28,17 @@ def generate_launch_description():
             node_name='preception_bringup_container',
             node_namespace='perception',
             package='rclcpp_components',
-            node_executable='component_container_mt',
+            node_executable='component_container',
             composable_node_descriptions=[
-                getImageDecompressorComponent('front_camera'),
-                getImageRectifyComponent('front_camera'),
-                getPointsTransformComponent('front_lidar'),
-                getPointCloudToLaserScanComponent('front_lidar'),
-                getScanSgementationComponent('front_lidar')
+                # getImageDecompressorComponent('front_camera'),
+                # getImageRectifyComponent('front_camera'),
+                # getPointsTransformComponent('front_lidar'),
+                # getPointCloudToLaserScanComponent('front_lidar'),
+                # getScanSgementationComponent('front_lidar'),
+                getRadiusOutlierRemovalComponent('front_lidar'),
+                getRadiusOutlierRemovalComponent('rear_lidar'),
+                getRadiusOutlierRemovalComponent('right_lidar'),
+                getRadiusOutlierRemovalComponent('left_lidar')
             ],
             output='screen',
     )
@@ -105,6 +109,22 @@ def getPointCloudToLaserScanComponent(lidar_name):
         namespace='/perception/'+lidar_name,
         name='pointcloud_to_laserscan_node',
         remappings=[("cloud_in", "points_raw/transformed")],
+        parameters=[params])
+    return component
+
+
+def getRadiusOutlierRemovalComponent(lidar_name):
+    config_directory = os.path.join(
+        ament_index_python.packages.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, lidar_name+'_radius_outlier_removal.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)[lidar_name + '_radius_outlier_removal_node']['ros__parameters']
+    component = ComposableNode(
+        package='pcl_apps',
+        plugin='pcl_apps::RadiusOutlierRemovalComponent',
+        namespace='/perception/'+lidar_name,
+        name='radius_outlier_removal_node',
         parameters=[params])
     return component
 
