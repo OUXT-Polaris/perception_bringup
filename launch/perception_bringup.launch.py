@@ -32,13 +32,17 @@ def generate_launch_description():
             composable_node_descriptions=[
                 # getImageDecompressorComponent('front_camera'),
                 # getImageRectifyComponent('front_camera'),
-                # getPointsTransformComponent('front_lidar'),
                 # getPointCloudToLaserScanComponent('front_lidar'),
                 # getScanSgementationComponent('front_lidar'),
                 getRadiusOutlierRemovalComponent('front_lidar'),
                 getRadiusOutlierRemovalComponent('rear_lidar'),
                 getRadiusOutlierRemovalComponent('right_lidar'),
-                getRadiusOutlierRemovalComponent('left_lidar')
+                getRadiusOutlierRemovalComponent('left_lidar'),
+                getPointsTransformComponent('front_lidar'),
+                getPointsTransformComponent('rear_lidar'),
+                getPointsTransformComponent('right_lidar'),
+                getPointsTransformComponent('left_lidar'),
+                getPointsConcatenateComponent()
             ],
             output='screen',
     )
@@ -75,6 +79,22 @@ def getScanSgementationComponent(lidar_name):
         namespace='/perception/'+lidar_name,
         name='scan_segmentation_node',
         remappings=[],
+        parameters=[params])
+    return component
+
+
+def getPointsConcatenateComponent():
+    config_directory = os.path.join(
+        ament_index_python.packages.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, 'points_concatenate.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)['points_concatenate_node']['ros__parameters']
+    component = ComposableNode(
+        package='pcl_apps',
+        plugin='pcl_apps::PointsConcatenateComponent',
+        namespace='/perception/',
+        name='points_concatenate_node',
         parameters=[params])
     return component
 
