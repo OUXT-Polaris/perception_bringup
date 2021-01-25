@@ -1,8 +1,7 @@
 points_concatenate_node:
     ros__parameters:
         num_input: 4
-        input_topic:
-            0 : "/perception/front_lidar/radius_outlier_removal_node/output"
-            1 : "/perception/rear_lidar/radius_outlier_removal_node/output"
-            2 : "/perception/left_lidar/radius_outlier_removal_node/output"
-            3 : "/perception/right_lidar/radius_outlier_removal_node/output"
+        input_topic0: "/perception/front_lidar/points_transform_node/output"
+        input_topic1: "/perception/rear_lidar/points_transform_node/output"
+        input_topic2: "/perception/left_lidar/points_transform_node/output"
+        input_topic3: "/perception/right_lidar/points_transform_node/output"
