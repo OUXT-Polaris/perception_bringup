@@ -32,8 +32,8 @@ def generate_launch_description():
             composable_node_descriptions=[
                 # getImageDecompressorComponent('front_camera'),
                 # getImageRectifyComponent('front_camera'),
-                # getPointCloudToLaserScanComponent('front_lidar'),
                 # getScanSgementationComponent('front_lidar'),
+                getPointCloudToLaserScanComponent(),
                 getRadiusOutlierRemovalComponent('front_lidar'),
                 getRadiusOutlierRemovalComponent('rear_lidar'),
                 getRadiusOutlierRemovalComponent('right_lidar'),
@@ -93,7 +93,7 @@ def getPointsConcatenateComponent():
     component = ComposableNode(
         package='pcl_apps',
         plugin='pcl_apps::PointsConcatenateComponent',
-        namespace='/perception/',
+        namespace='perception',
         name='points_concatenate_node',
         parameters=[params])
     return component
@@ -116,19 +116,22 @@ def getCropBoxFilterComponent(lidar_name):
     return component
 
 
-def getPointCloudToLaserScanComponent(lidar_name):
+def getPointCloudToLaserScanComponent():
     config_directory = os.path.join(
         ament_index_python.packages.get_package_share_directory('perception_bringup'),
         'config')
-    param_config = os.path.join(config_directory, lidar_name+'_pointcloud_to_laserscan.yaml')
+    param_config = os.path.join(config_directory, 'pointcloud_to_laserscan.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)[lidar_name + '_pointcloud_to_laserscan_node']['ros__parameters']
+        params = yaml.safe_load(f)['pointcloud_to_laserscan_node']['ros__parameters']
     component = ComposableNode(
-        package='pointcloud_to_laserscan',
-        plugin='pointcloud_to_laserscan::PointCloudToLaserScanNode',
-        namespace='/perception/'+lidar_name,
+        package='pcl_apps',
+        plugin='pcl_apps::PointCloudToLaserScanComponent',
+        namespace='/perception/',
         name='pointcloud_to_laserscan_node',
-        remappings=[("cloud_in", "points_raw/transformed")],
+        remappings=[
+            ("input", "points_concatenate_node/output"),
+            ("output", "pointcloud_to_laserscan_node/output")
+        ],
         parameters=[params])
     return component
 
