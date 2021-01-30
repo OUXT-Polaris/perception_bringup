@@ -32,7 +32,7 @@ def generate_launch_description():
             composable_node_descriptions=[
                 # getImageDecompressorComponent('front_camera'),
                 # getImageRectifyComponent('front_camera'),
-                # getScanSgementationComponent('front_lidar'),
+                getScanSgementationComponent(),
                 getPointCloudToLaserScanComponent(),
                 getRadiusOutlierRemovalComponent('front_lidar'),
                 getRadiusOutlierRemovalComponent('rear_lidar'),
@@ -66,19 +66,18 @@ def getPointsTransformComponent(lidar_name):
     return component
 
 
-def getScanSgementationComponent(lidar_name):
+def getScanSgementationComponent():
     config_directory = os.path.join(
         ament_index_python.packages.get_package_share_directory('perception_bringup'),
         'config')
-    param_config = os.path.join(config_directory, lidar_name+'_scan_segmentation.yaml')
+    param_config = os.path.join(config_directory, 'scan_segmentation.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)[lidar_name + '_scan_segmentation_node']['ros__parameters']
+        params = yaml.safe_load(f)['scan_segmentation_node']['ros__parameters']
     component = ComposableNode(
         package='scan_segmentation',
         plugin='scan_segmentation::ScanSegmentationComponent',
-        namespace='/perception/'+lidar_name,
+        namespace='/perception',
         name='scan_segmentation_node',
-        remappings=[],
         parameters=[params])
     return component
 

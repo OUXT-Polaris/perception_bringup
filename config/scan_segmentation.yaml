@@ -1,6 +1,6 @@
-front_lidar_scan_segmentation_node:
+scan_segmentation_node:
     ros__parameters:
-        scan_topic : "scan"
+        scan_topic : "/perception/pointcloud_to_laserscan_node/output"
         max_segment_distance : 0.8
         min_segment_distance : 0.1
         distance_ratio : 2.0
