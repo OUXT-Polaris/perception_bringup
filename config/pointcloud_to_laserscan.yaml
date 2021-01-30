@@ -3,4 +3,4 @@ pointcloud_to_laserscan_node:
         min_height : -3.0
         max_heitht : 3.0
         scan_time : 0.3333
-        use_inf: false
+        use_inf: true
