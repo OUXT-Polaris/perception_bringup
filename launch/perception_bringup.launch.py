@@ -33,6 +33,7 @@ def generate_launch_description():
                 # getImageDecompressorComponent('front_camera'),
                 # getImageRectifyComponent('front_camera'),
                 getScanSgementationComponent(),
+                getCropHullFilterComponent(),
                 getPointCloudToLaserScanComponent(),
                 getRadiusOutlierRemovalComponent('front_lidar'),
                 getRadiusOutlierRemovalComponent('rear_lidar'),
@@ -79,6 +80,19 @@ def getScanSgementationComponent():
         namespace='/perception',
         name='scan_segmentation_node',
         parameters=[params])
+    return component
+
+
+def getCropHullFilterComponent():
+    component = ComposableNode(
+        package='pcl_apps',
+        plugin='pcl_apps::CropHullFilterComponent',
+        namespace='/perception',
+        remappings=[
+            ("points", "points_concatenate_node/output"),
+            ("polygon", "scan_segmentation_node/polygon")
+        ],
+        name='crop_hull_filter_node')
     return component
 
 
