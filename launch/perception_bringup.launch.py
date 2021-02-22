@@ -32,6 +32,7 @@ def generate_launch_description():
             composable_node_descriptions=[
                 # getImageDecompressorComponent('front_camera'),
                 # getImageRectifyComponent('front_camera'),
+                getPointCloudProjectionComponent('left_camera'),
                 getScanSgementationComponent(),
                 getCropHullFilterComponent(),
                 getPointCloudToLaserScanComponent(),
@@ -48,6 +49,22 @@ def generate_launch_description():
             output='screen',
     )
     return launch.LaunchDescription([container])
+
+
+def getPointCloudProjectionComponent(camera_name):
+    config_directory = os.path.join(
+        ament_index_python.packages.get_package_share_directory('perception_bringup'),
+        'config', 'pointcloud_projection')
+    param_config = os.path.join(config_directory, camera_name+'_pointcloud_projection.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)[camera_name + '_pointcloud_projection_node']['ros__parameters']
+    component = ComposableNode(
+        package='pcl_apps',
+        plugin='pcl_apps::PointCloudProjectionComponent',
+        namespace='/perception/'+camera_name,
+        name='points_projection_node',
+        parameters=[params])
+    return component
 
 
 def getPointsTransformComponent(lidar_name):
