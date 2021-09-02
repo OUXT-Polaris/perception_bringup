@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import launch
+from launch.actions.declare_launch_argument import DeclareLaunchArgument
+from launch.substitutions.launch_configuration import LaunchConfiguration
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 
@@ -24,6 +26,7 @@ import yaml
 
 
 def generate_launch_description():
+    launch_prefix = LaunchConfiguration("launch_prefix")
     container = ComposableNodeContainer(
             node_name='preception_bringup_container',
             node_namespace='perception',
@@ -46,8 +49,15 @@ def generate_launch_description():
                 getPointsConcatenateComponent()
             ],
             output='screen',
+            prefix=[launch_prefix]
     )
-    return launch.LaunchDescription([container])
+    return launch.LaunchDescription([
+        container,
+        DeclareLaunchArgument(
+            'launch_prefix',
+            default_value=launch_prefix,
+            description="launch prefix")
+        ])
 
 
 def getPointsTransformComponent(lidar_name):
