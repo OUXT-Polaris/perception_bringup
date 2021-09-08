@@ -12,21 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import ament_index_python.packages
 import launch
 from launch.actions.declare_launch_argument import DeclareLaunchArgument
 from launch.substitutions.launch_configuration import LaunchConfiguration
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 
+
 import os
-
-import ament_index_python.packages
-
 import yaml
 
 
 def generate_launch_description():
-    launch_prefix = LaunchConfiguration("launch_prefix")
+    launch_prefix = LaunchConfiguration('launch_prefix')
     container = ComposableNodeContainer(
             node_name='preception_bringup_container',
             node_namespace='perception',
@@ -56,7 +55,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'launch_prefix',
             default_value=launch_prefix,
-            description="launch prefix")
+            description='launch prefix')
         ])
 
 
@@ -72,7 +71,7 @@ def getPointsTransformComponent(lidar_name):
         plugin='pcl_apps::PointsTransformComponent',
         namespace='/perception/'+lidar_name,
         name='points_transform_node',
-        remappings=[("input", lidar_name+"/points_raw"), ("output", "points_raw/transformed")],
+        remappings=[('input', lidar_name+'/points_raw'), ('output', 'points_raw/transformed')],
         parameters=[params])
     return component
 
@@ -99,8 +98,8 @@ def getCropHullFilterComponent():
         plugin='pcl_apps::CropHullFilterComponent',
         namespace='/perception',
         remappings=[
-            ("points", "points_concatenate_node/output"),
-            ("polygon", "scan_segmentation_node/polygon")
+            ('points', 'points_concatenate_node/output'),
+            ('polygon', 'scan_segmentation_node/polygon')
         ],
         name='crop_hull_filter_node')
     return component
@@ -134,7 +133,7 @@ def getCropBoxFilterComponent(lidar_name):
         plugin='pcl_apps::CropBoxFilterComponent',
         namespace='/perception/'+lidar_name,
         name='crop_box_filter_node',
-        remappings=[("points", "points_raw/transformed")],
+        remappings=[('points', 'points_raw/transformed')],
         parameters=[params])
     return component
 
@@ -152,8 +151,8 @@ def getPointCloudToLaserScanComponent():
         namespace='/perception/',
         name='pointcloud_to_laserscan_node',
         remappings=[
-            ("input", "points_concatenate_node/output"),
-            ("output", "pointcloud_to_laserscan_node/output")
+            ('input', 'points_concatenate_node/output'),
+            ('output', 'pointcloud_to_laserscan_node/output')
         ],
         parameters=[params])
     return component
@@ -197,6 +196,6 @@ def getImageRectifyComponent(camera_name):
         plugin='image_processing_utils::ImageRectifyComponent',
         namespace='/perception/'+camera_name,
         name='image_rectify_node',
-        remappings=[("image", "image_raw")],
+        remappings=[('image', 'image_raw')],
         parameters=[])
     return component
