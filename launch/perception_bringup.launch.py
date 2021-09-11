@@ -27,10 +27,10 @@ import yaml
 def generate_launch_description():
     launch_prefix = LaunchConfiguration('launch_prefix')
     container = ComposableNodeContainer(
-            node_name='preception_bringup_container',
-            node_namespace='perception',
+            name='preception_bringup_container',
+            namespace='perception',
             package='rclcpp_components',
-            node_executable='component_container',
+            executable='component_container',
             composable_node_descriptions=[
                 # getImageDecompressorComponent('front_camera'),
                 # getImageRectifyComponent('front_camera'),
