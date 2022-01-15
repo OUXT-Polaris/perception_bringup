@@ -45,7 +45,8 @@ def generate_launch_description():
                 getPointsTransformComponent('rear_lidar'),
                 getPointsTransformComponent('right_lidar'),
                 getPointsTransformComponent('left_lidar'),
-                getPointsConcatenateComponent()
+                getPointsConcatenateComponent(),
+                CostmapCalculatorComponent()
             ],
             output='screen',
             prefix=[launch_prefix]
@@ -120,6 +121,13 @@ def getPointsConcatenateComponent():
         parameters=[params])
     return component
 
+def CostmapCalculatorComponent():
+    component = ComposableNode(
+        package='robotx_costmap_calculator',
+        plugin='robotx_costmap_calculator::CostmapCalculatorComponent',
+        namespace='perception',
+        name='costmap_calculator_node')
+    return component
 
 def getCropBoxFilterComponent(lidar_name):
     config_directory = os.path.join(
