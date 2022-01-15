@@ -25,7 +25,6 @@ import yaml
 
 
 def generate_launch_description():
-    launch_prefix = LaunchConfiguration('launch_prefix')
     container = ComposableNodeContainer(
             name='preception_bringup_container',
             namespace='perception',
@@ -48,15 +47,10 @@ def generate_launch_description():
                 getPointsConcatenateComponent(),
                 CostmapCalculatorComponent()
             ],
-            output='screen',
-            prefix=[launch_prefix]
+            output='screen'
     )
     return launch.LaunchDescription([
-        container,
-        DeclareLaunchArgument(
-            'launch_prefix',
-            default_value=launch_prefix,
-            description='launch prefix')
+        container
         ])
 
 
