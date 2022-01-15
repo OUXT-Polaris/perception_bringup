@@ -45,7 +45,7 @@ def generate_launch_description():
                 getPointsTransformComponent('right_lidar'),
                 getPointsTransformComponent('left_lidar'),
                 getPointsConcatenateComponent(),
-                CostmapCalculatorComponent()
+                getCostmapCalculatorComponent()
             ],
             output='screen'
     )
@@ -115,7 +115,7 @@ def getPointsConcatenateComponent():
         parameters=[params])
     return component
 
-def CostmapCalculatorComponent():
+def getCostmapCalculatorComponent():
     component = ComposableNode(
         package='robotx_costmap_calculator',
         plugin='robotx_costmap_calculator::CostmapCalculatorComponent',
