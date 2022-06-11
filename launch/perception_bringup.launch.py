@@ -29,7 +29,7 @@ def generate_launch_description():
             name='preception_bringup_container',
             namespace='perception',
             package='rclcpp_components',
-            executable='component_container',
+            executable='component_container_mt',
             composable_node_descriptions=[
                 # getImageDecompressorComponent('front_camera'),
                 # getImageRectifyComponent('front_camera'),
