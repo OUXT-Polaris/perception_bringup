@@ -116,11 +116,18 @@ def getPointsConcatenateComponent():
     return component
 
 def getCostmapCalculatorComponent():
+    config_directory = os.path.join(
+        ament_index_python.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, 'costmap_calculator.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)['costmap_calculator_node']['ros__parameters']    
     component = ComposableNode(
         package='robotx_costmap_calculator',
         plugin='robotx_costmap_calculator::CostmapCalculatorComponent',
         namespace='perception',
-        name='costmap_calculator_node')
+        name='costmap_calculator_node',
+        parameters=[params])
     return component
 
 def getCropBoxFilterComponent(lidar_name):

@@ -1,0 +1,5 @@
+costmap_calculator_node:
+  ros__parameters:
+    resolution: 0.2
+    num_grids: 100
+
