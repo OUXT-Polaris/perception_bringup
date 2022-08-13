@@ -44,8 +44,8 @@ def generate_launch_description():
                 getPointsTransformComponent('rear_lidar'),
                 getPointsTransformComponent('right_lidar'),
                 getPointsTransformComponent('left_lidar'),
-                getPointsConcatenateComponent()#,
-                #getCostmapCalculatorComponent()
+                getPointsConcatenateComponent(),
+                getCostmapCalculatorComponent()
             ],
             output='screen'
     )
