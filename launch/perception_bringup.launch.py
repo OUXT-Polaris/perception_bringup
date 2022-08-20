@@ -45,7 +45,9 @@ def generate_launch_description():
                 getPointsTransformComponent('right_lidar'),
                 getPointsTransformComponent('left_lidar'),
                 getPointsConcatenateComponent(),
-                getCostmapCalculatorComponent()
+                getCostmapCalculatorComponent(),
+                getCostmapfilterComponent(),
+                getCostmapinterpolationComponent()                
             ],
             output='screen'
     )
@@ -127,6 +129,36 @@ def getCostmapCalculatorComponent():
         plugin='robotx_costmap_calculator::CostmapCalculatorComponent',
         namespace='perception',
         name='costmap_calculator_node',
+        parameters=[params])
+    return component
+
+def getCostmapfilterComponent():
+    config_directory =os.path.join(
+        ament_index_python.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, 'costmap_filter.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)['costmap_filter_node']['ros__parameters']    
+    component = ComposableNode(
+        package='robotx_costmap_calculator',
+        plugin='robotx_costmap_calculator::CostmapFilterComponent',
+        namespace='perception',
+        name='costmap_filter_node',
+        parameters=[params])
+    return component
+
+def getCostmapinterpolationComponent():
+    config_directory =os.path.join(
+        ament_index_python.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, 'costmap_interpolation.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)['costmap_interpolation_node']['ros__parameters']    
+    component = ComposableNode(
+        package='robotx_costmap_calculator',
+        plugin='robotx_costmap_calculator::CostmapInterpolationComponent',
+        namespace='perception',
+        name='costmap_interpolation_node',
         parameters=[params])
     return component
 
