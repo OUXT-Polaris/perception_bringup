@@ -45,12 +45,12 @@ def generate_launch_description():
 
 def getVelodyneConvertComponent():
     config_directory = os.path.join(
-        ament_index_python.get_package_share_directory('velodyne_pointcloud'),
-        'config')
-    param_config = os.path.join(config_directory, 'VLP16-velodyne_convert_node-params.yaml')
+        ament_index_python.get_package_share_directory('velodyne_pointcloud'))
+    
+    param_config = os.path.join(config_directory, 'config', 'VLP16-velodyne_convert_node-params.yaml')
     with open(param_config, 'r') as f:
         params = yaml.safe_load(f)['velodyne_convert_node']['ros__parameters']
-    params['calibration'] = os.path.join(share_dir, 'params', 'VLP16db.yaml')    
+    params['calibration'] = os.path.join(config_directory, 'params', 'VLP16db.yaml')    
     component = ComposableNode(
         package='velodyne_pointcloud',
         plugin='velodyne_pointcloud::Convert',
