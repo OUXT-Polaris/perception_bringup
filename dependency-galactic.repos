@@ -39,3 +39,7 @@ repositories:
     type: git
     url: https://github.com/ANYbotics/grid_map.git
     version: 7afca6c8314bd3016dc974541aecca3ed39ccab0
+  lidar_camera_fusion:
+    type: git
+    url: https://github.com/OUXT-Polaris/lidar_camera_fusion.git
+    version: master
