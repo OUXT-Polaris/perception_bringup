@@ -1,0 +1,7 @@
+front_left_camera_lidar_camera_fusion_node:
+    ros__parameters:
+        camera_topic: "/sensing/front_left_camera/detection"
+        lidar_topic: "/perception/front_left_camera/detections"
+        fusion_poll_period_msec: 100
+        fusion_allowed_delay_msec: 50
+        iou_lower_bound: 0.3

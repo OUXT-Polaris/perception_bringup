@@ -31,6 +31,7 @@ def generate_launch_description():
             package='rclcpp_components',
             executable='component_container_mt',
             composable_node_descriptions=[
+                getLidarCameraFusionComponent('front_left_camera'),
                 # getImageDecompressorComponent('front_camera'),
                 # getImageRectifyComponent('front_camera'),
                 getPointsProjectionComponent('front_left_camera'),
@@ -60,6 +61,24 @@ def generate_launch_description():
     return launch.LaunchDescription([
         container
         ])
+
+
+def getLidarCameraFusionComponent(camera_name):
+    config_directory = os.path.join(
+        ament_index_python.packages.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, camera_name+'_lidar_camera_fusion.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)[camera_name + '_lidar_camera_fusion_node']['ros__parameters']
+    print(params)
+    component = ComposableNode(
+        package='lidar_camera_fusion',
+        plugin='lidar_camera_fusion::LidarCameraFusionComponent',
+        namespace='/perception/' + camera_name,
+        name='lidar_camera_fusion_node',
+        #remappings=[('input', lidar_name+'/points_raw'), ('output', 'points_raw/transformed')],
+        parameters=[params])
+    return component
 
 
 def getPointsProjectionComponent(camera_name):
