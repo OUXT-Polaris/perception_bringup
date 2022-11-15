@@ -61,9 +61,9 @@ def generate_launch_description():
     )
     velodyne_container = LoadComposableNodes(
         composable_node_descriptions=[
-            # getVelodyneDriverComponent('front_lidar'),
+            getVelodyneDriverComponent('front_lidar'),
             getVelodyneDriverComponent('rear_lidar'),
-            # getVelodyneConvertComponent('front_lidar'),
+            getVelodyneConvertComponent('front_lidar'),
             getVelodyneConvertComponent('rear_lidar')
         ],
         target_container=container,
@@ -91,7 +91,7 @@ def getVelodyneDriverComponent(lidar_name):
         'config')
     param_config = os.path.join(config_directory, lidar_name+'_velodyne_driver.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)[lidar_name + '_velodyne_driver_node']['ros__parameters']    
+        params = yaml.safe_load(f)[lidar_name+'_velodyne_driver_node']['ros__parameters']    
     component = ComposableNode(
         package='velodyne_driver',
         plugin='velodyne_driver::VelodyneDriver',
@@ -116,7 +116,7 @@ def getVelodyneConvertComponent(lidar_name):
         plugin='velodyne_pointcloud::Convert',
         namespace='/perception/'+lidar_name,
         name='velodyne_convert_node',
-        remappings=[('/perception/'+lidar_name+'/velodyne_points', '/perception/'+lidar_name+'/points_raw')],
+        remappings=[('/perception/'+lidar_name+'/velodyne_points', '/perception/'+lidar_name+'/points_raw'),('/velodyne_packets','/perception/'+lidar_name+'/velodyne_packets')],
         parameters=[params])
     return component
 
