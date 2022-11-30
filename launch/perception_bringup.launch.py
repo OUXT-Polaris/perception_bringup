@@ -26,7 +26,7 @@ import yaml
 
 
 def generate_launch_description():
-    use_hardware = LaunchConfiguration("use_hardware",default=True)
+    use_hardware = LaunchConfiguration("use_hardware",default=False)
     container = ComposableNodeContainer(
             name='preception_bringup_container',
             namespace='perception',
