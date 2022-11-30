@@ -16,15 +16,17 @@ import ament_index_python.packages
 import launch
 from launch.actions.declare_launch_argument import DeclareLaunchArgument
 from launch.substitutions.launch_configuration import LaunchConfiguration
-from launch_ros.actions import ComposableNodeContainer
+from launch_ros.actions import ComposableNodeContainer,LoadComposableNodes
 from launch_ros.descriptions import ComposableNode
-
+from launch.conditions import IfCondition
+from launch import LaunchDescription
 
 import os
 import yaml
 
 
 def generate_launch_description():
+    use_hardware = LaunchConfiguration("use_hardware",default=False)
     container = ComposableNodeContainer(
             name='preception_bringup_container',
             namespace='perception',
@@ -57,9 +59,67 @@ def generate_launch_description():
             ],
             output='screen'
     )
-    return launch.LaunchDescription([
-        container
-        ])
+    velodyne_container = LoadComposableNodes(
+        composable_node_descriptions=[
+            getVelodyneDriverComponent('front_lidar'),
+            getVelodyneDriverComponent('rear_lidar'),
+            getVelodyneConvertComponent('front_lidar'),
+            getVelodyneConvertComponent('rear_lidar')
+        ],
+        target_container=container,
+        condition=IfCondition(use_hardware),
+    )
+    description = LaunchDescription(
+        [
+            DeclareLaunchArgument(
+                "use_hardware",
+                default_value=use_hardware,
+                description="If true, use hardware.",
+            ),
+            container,
+            velodyne_container
+        ]
+    )
+    return description
+    # return launch.LaunchDescription([
+    #     container
+    #     ])
+
+def getVelodyneDriverComponent(lidar_name):
+    config_directory = os.path.join(
+        ament_index_python.packages.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(config_directory, lidar_name+'_velodyne_driver.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)[lidar_name+'_velodyne_driver_node']['ros__parameters']    
+    component = ComposableNode(
+        package='velodyne_driver',
+        plugin='velodyne_driver::VelodyneDriver',
+        namespace='/perception/'+lidar_name,
+        name='velodyne_driver_node',
+        parameters=[params])
+    return component
+
+
+def getVelodyneConvertComponent(lidar_name):
+    calibration_config_directory = os.path.join(
+        ament_index_python.get_package_share_directory('velodyne_pointcloud'))
+    param_config_directory = os.path.join(
+        ament_index_python.packages.get_package_share_directory('perception_bringup'),
+        'config')
+    param_config = os.path.join(param_config_directory, lidar_name+'_velodyne_convert.yaml')
+    with open(param_config, 'r') as f:
+        params = yaml.safe_load(f)[lidar_name + '_velodyne_convert_node']['ros__parameters']
+    params['calibration'] = os.path.join(calibration_config_directory, 'params', 'VLP16db.yaml')    
+    component = ComposableNode(
+        package='velodyne_pointcloud',
+        plugin='velodyne_pointcloud::Convert',
+        namespace='/perception/'+lidar_name,
+        name='velodyne_convert_node',
+        remappings=[('/perception/'+lidar_name+'/velodyne_points', '/perception/'+lidar_name+'/points_raw'),('/velodyne_packets','/perception/'+lidar_name+'/velodyne_packets')],
+        parameters=[params])
+    return component
+
 
 
 def getPointsProjectionComponent(camera_name):
