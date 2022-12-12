@@ -13,6 +13,7 @@
   <depend>scan_segmentation</depend>
   <depend>image_processing_utils</depend>
   <depend>util-linux</depend>
+  <depend>velodyne_pointcloud</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ouxt_lint_common</test_depend>
