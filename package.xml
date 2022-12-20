@@ -9,10 +9,14 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <depend>grid_map</depend>
+  <depend>image_processing_utils</depend>
+  <depend>pcl_apps</depend>
   <depend>rclcpp</depend>
   <depend>scan_segmentation</depend>
-  <depend>image_processing_utils</depend>
   <depend>util-linux</depend>
+  <depend>velodyne</depend>
+  <depend>robotx_costmap_calculator</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ouxt_lint_common</test_depend>
