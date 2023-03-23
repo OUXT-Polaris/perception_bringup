@@ -17,6 +17,8 @@
   <depend>util-linux</depend>
   <depend>velodyne</depend>
   <depend>robotx_costmap_calculator</depend>
+  <depend>velodyne_pointcloud</depend>
+  <depend>velodyne_driver</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ouxt_lint_common</test_depend>
