@@ -17,9 +17,6 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(scan_segmentation REQUIRED)
-find_package(image_processing_utils REQUIRED)
 
 install(DIRECTORY
   launch
