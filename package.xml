@@ -8,12 +8,12 @@
   <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-
-  <depend>scan_segmentation</depend>
-  <depend>image_processing_utils</depend>
   <depend>util-linux</depend>
-  <depend>velodyne_pointcloud</depend>
-  <depend>velodyne_driver</depend>
+
+  <exec_depend>scan_segmentation</exec_depend>
+  <exec_depend>image_processing_utils</exec_depend>
+  <exec_depend>velodyne_pointcloud</exec_depend>
+  <exec_depend>velodyne_driver</exec_depend>
 
   <test_depend>ouxt_lint_common</test_depend>
 
