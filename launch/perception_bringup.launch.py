@@ -124,7 +124,7 @@ def getPointsProjectionComponent(camera_name):
     config_directory = os.path.join(
         ament_index_python.packages.get_package_share_directory('perception_bringup'),
         'config')
-    param_config = os.path.join(config_directory, camera_name+'_pointcloud_projection.yaml')
+    param_config = os.path.join(config_directory, 'pointcloud_projection', camera_name+'_pointcloud_projection.yaml')
     with open(param_config, 'r') as f:
         params = yaml.safe_load(f)['perception'][camera_name]['pointcloud_projection_node']['ros__parameters']
     print(params)
@@ -205,7 +205,7 @@ def getCostmapCalculatorComponent():
         'config')
     param_config = os.path.join(config_directory, 'costmap', 'costmap_calculator.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)['preception']['costmap_calculator_node']['ros__parameters']    
+        params = yaml.safe_load(f)['perception']['costmap_calculator_node']['ros__parameters']    
     component = ComposableNode(
         package='robotx_costmap_calculator',
         plugin='robotx_costmap_calculator::CostmapCalculatorComponent',
@@ -235,7 +235,7 @@ def getCostmapinterpolationComponent():
         'config')
     param_config = os.path.join(config_directory, 'costmap', 'costmap_interpolation.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)['preception']['costmap_interpolation_node']['ros__parameters']    
+        params = yaml.safe_load(f)['perception']['costmap_interpolation_node']['ros__parameters']    
     component = ComposableNode(
         package='robotx_costmap_calculator',
         plugin='robotx_costmap_calculator::CostmapInterpolationComponent',
@@ -285,7 +285,7 @@ def getRadiusOutlierRemovalComponent(lidar_name):
     config_directory = os.path.join(
         ament_index_python.packages.get_package_share_directory('perception_bringup'),
         'config')
-    param_config = os.path.join(config_directory, lidar_name+'_radius_outlier_removal.yaml')
+    param_config = os.path.join(config_directory, 'radius_outlier_removal', lidar_name+'_radius_outlier_removal.yaml')
     with open(param_config, 'r') as f:
         params = yaml.safe_load(f)['perception'][lidar_name]['radius_outlier_removal_node']['ros__parameters']
     component = ComposableNode(
