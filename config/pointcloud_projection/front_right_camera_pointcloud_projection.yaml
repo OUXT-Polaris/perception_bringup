@@ -1,0 +1,7 @@
+perception:
+    front_right_camera:
+        pointcloud_projection_node:
+            ros__parameters:
+                camera_info_topic: "/sensing/front_right_camera/camera_info"
+                pointcloud_array_topic: "/perception/points_array"
+                

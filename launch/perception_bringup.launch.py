@@ -33,8 +33,6 @@ def generate_launch_description():
             package='rclcpp_components',
             executable='component_container_mt',
             composable_node_descriptions=[
-                # getImageDecompressorComponent('front_camera'),
-                # getImageRectifyComponent('front_camera'),
                 getPointsProjectionComponent('front_left_camera'),
                 getPointsProjectionComponent('front_right_camera'),
                 getPointsProjectionComponent('rear_left_camera'),
@@ -128,7 +126,7 @@ def getPointsProjectionComponent(camera_name):
         'config')
     param_config = os.path.join(config_directory, camera_name+'_pointcloud_projection.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)[camera_name + '_pointcloud_projection_node']['ros__parameters']
+        params = yaml.safe_load(f)['perception'][camera_name]['pointcloud_projection_node']['ros__parameters']
     print(params)
     component = ComposableNode(
         package='pcl_apps',
@@ -144,9 +142,9 @@ def getPointsTransformComponent(lidar_name):
     config_directory = os.path.join(
         ament_index_python.packages.get_package_share_directory('perception_bringup'),
         'config')
-    param_config = os.path.join(config_directory, lidar_name+'_points_transform.yaml')
+    param_config = os.path.join(config_directory, 'points_transform', lidar_name+'_points_transform.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)[lidar_name + '_points_transform_node']['ros__parameters']
+        params = yaml.safe_load(f)['perception'][lidar_name]['points_transform_node']['ros__parameters']
     component = ComposableNode(
         package='pcl_apps',
         plugin='pcl_apps::PointsTransformComponent',
@@ -163,7 +161,7 @@ def getScanSgementationComponent():
         'config')
     param_config = os.path.join(config_directory, 'scan_segmentation.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)['scan_segmentation_node']['ros__parameters']
+        params = yaml.safe_load(f)['perception']['scan_segmentation_node']['ros__parameters']
     component = ComposableNode(
         package='scan_segmentation',
         plugin='scan_segmentation::ScanSegmentationComponent',
@@ -205,9 +203,9 @@ def getCostmapCalculatorComponent():
     config_directory = os.path.join(
         ament_index_python.get_package_share_directory('perception_bringup'),
         'config')
-    param_config = os.path.join(config_directory, 'costmap_calculator.yaml')
+    param_config = os.path.join(config_directory, 'costmap', 'costmap_calculator.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)['costmap_calculator_node']['ros__parameters']    
+        params = yaml.safe_load(f)['preception']['costmap_calculator_node']['ros__parameters']    
     component = ComposableNode(
         package='robotx_costmap_calculator',
         plugin='robotx_costmap_calculator::CostmapCalculatorComponent',
@@ -220,9 +218,9 @@ def getCostmapfilterComponent():
     config_directory =os.path.join(
         ament_index_python.get_package_share_directory('perception_bringup'),
         'config')
-    param_config = os.path.join(config_directory, 'costmap_filter.yaml')
+    param_config = os.path.join(config_directory, 'costmap', 'costmap_filter.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)['costmap_filter_node']['ros__parameters']    
+        params = yaml.safe_load(f)['perception']['costmap_filter_node']['ros__parameters']    
     component = ComposableNode(
         package='robotx_costmap_calculator',
         plugin='robotx_costmap_calculator::CostmapFilterComponent',
@@ -235,9 +233,9 @@ def getCostmapinterpolationComponent():
     config_directory =os.path.join(
         ament_index_python.get_package_share_directory('perception_bringup'),
         'config')
-    param_config = os.path.join(config_directory, 'costmap_interpolation.yaml')
+    param_config = os.path.join(config_directory, 'costmap', 'costmap_interpolation.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)['costmap_interpolation_node']['ros__parameters']    
+        params = yaml.safe_load(f)['preception']['costmap_interpolation_node']['ros__parameters']    
     component = ComposableNode(
         package='robotx_costmap_calculator',
         plugin='robotx_costmap_calculator::CostmapInterpolationComponent',
@@ -250,7 +248,7 @@ def getCropBoxFilterComponent(lidar_name):
     config_directory = os.path.join(
         ament_index_python.packages.get_package_share_directory('perception_bringup'),
         'config')
-    param_config = os.path.join(config_directory, 'crop_box_filter.yaml')
+    param_config = os.path.join(config_directory, 'costmap', 'crop_box_filter.yaml')
     with open(param_config, 'r') as f:
         params = yaml.safe_load(f)['crop_box_filter_node']['ros__parameters']
     component = ComposableNode(
@@ -269,7 +267,7 @@ def getPointCloudToLaserScanComponent():
         'config')
     param_config = os.path.join(config_directory, 'pointcloud_to_laserscan.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)['pointcloud_to_laserscan_node']['ros__parameters']
+        params = yaml.safe_load(f)['perception']['pointcloud_to_laserscan_node']['ros__parameters']
     component = ComposableNode(
         package='pcl_apps',
         plugin='pcl_apps::PointCloudToLaserScanComponent',
@@ -289,38 +287,11 @@ def getRadiusOutlierRemovalComponent(lidar_name):
         'config')
     param_config = os.path.join(config_directory, lidar_name+'_radius_outlier_removal.yaml')
     with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)[lidar_name + '_radius_outlier_removal_node']['ros__parameters']
+        params = yaml.safe_load(f)['perception'][lidar_name]['radius_outlier_removal_node']['ros__parameters']
     component = ComposableNode(
         package='pcl_apps',
         plugin='pcl_apps::RadiusOutlierRemovalComponent',
         namespace='/perception/'+lidar_name,
         name='radius_outlier_removal_node',
         parameters=[params])
-    return component
-
-
-def getImageDecompressorComponent(camera_name):
-    config_directory = os.path.join(
-        ament_index_python.packages.get_package_share_directory('perception_bringup'),
-        'config')
-    param_config = os.path.join(config_directory, camera_name+'_image_decompressor.yaml')
-    with open(param_config, 'r') as f:
-        params = yaml.safe_load(f)[camera_name+'_image_decompressor_node']['ros__parameters']
-    component = ComposableNode(
-        package='image_processing_utils',
-        plugin='image_processing_utils::ImageDecompressorComponent',
-        namespace='/perception/'+camera_name,
-        name='image_decompressor_node',
-        parameters=[params])
-    return component
-
-
-def getImageRectifyComponent(camera_name):
-    component = ComposableNode(
-        package='image_processing_utils',
-        plugin='image_processing_utils::ImageRectifyComponent',
-        namespace='/perception/'+camera_name,
-        name='image_rectify_node',
-        remappings=[('image', 'image_raw')],
-        parameters=[])
     return component
