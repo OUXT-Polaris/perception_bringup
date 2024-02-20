@@ -14,6 +14,7 @@
   <exec_depend>image_processing_utils</exec_depend>
   <exec_depend>velodyne_pointcloud</exec_depend>
   <exec_depend>velodyne_driver</exec_depend>
+  <exec_depend>topic_tools</exec_depend>
 
   <test_depend>ouxt_lint_common</test_depend>
 

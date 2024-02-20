@@ -1,0 +1,5 @@
+perception:
+  costmap_interpolation_node:
+    ros__parameters:
+      grid_map_topic : "/perception/filter_map"
+      input_layer_name : "combined"

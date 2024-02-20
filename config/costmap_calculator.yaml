@@ -1,8 +1,0 @@
-costmap_calculator_node:
-  ros__parameters:
-    resolution: 0.2
-    num_grids: 100
-    scan_buffer_size: 2
-    forgetting_rate: 0.7
-    use_scan: true
-
