@@ -71,6 +71,21 @@
                 <param from="$(find-pkg-share perception_bringup)/config/costmap/costmap_interpolation.yaml"/>
             </composable_node>
             <!-- Section A end -->
+
+            <composable_node pkg="opencv_components" exec="opencv_mark_match" name="front_left_camera_matched" namespace="perception">
+                <remap from="sensors/cameras/front_left_camera_sensor/image_raw" to="/camera"/>
+            </composable_node>
+      
+            <composable_node pkg="opencv_components" exec="opencv_mark_match" name="front_right_camera_matched" namespace="perception">
+                <remap from="sensors/cameras/front_right_camera_sensor/image_raw" to="/camera"/>
+            </composable_node>
+      
+            <composable_node pkg="opencv_components" exec="opencv_mark_match" name="middle_right_camera_matched" namespace="perception">
+                <remap from="sensors/cameras/middle_right_camera_sensor/image_raw" to="/camera"/>
+            </composable_node>
+
+            <composable_node pkg="vrx_bridge" plugin="vrx_bridge::VRXBridgeComponent" name="vrx_bridge_component">
+            </composable_node>
         </node_container>
     </group>
 
@@ -192,20 +207,7 @@
         </node_container>
         
         <node_container pkg="rclcpp_components" exec="matching_container_ex" name="matching_container" namespace="matching" args="">
-            <node pkg="opencv_components" exec="opencv_mark_match" name="front_left_camera_matched" namespace="perception">
-                <remap from="sensors/cameras/front_left_camera_sensor/image_raw" to="/camera"/>
-            </node>
-      
-            <node pkg="opencv_components" exec="opencv_mark_match" name="front_right_camera_matched" namespace="perception">
-                <remap from="sensors/cameras/front_right_camera_sensor/image_raw" to="/camera"/>
-            </node>
-      
-            <node pkg="opencv_components" exec="opencv_mark_match" name="middle_right_camera_matched" namespace="perception">
-                <remap from="sensors/cameras/middle_right_camera_sensor/image_raw" to="/camera"/>
-            </node>
-
-            <node pkg="vrx_bridge" plugin="vrx_bridge::VRXBridgeComponent" name="vrx_bridge_component">
-            </node>
+            
         </node_container>
     </group>
 </launch>
