@@ -205,9 +205,5 @@
             </composable_node>
             <!-- Section A end -->
         </node_container>
-        
-        <node_container pkg="rclcpp_components" exec="matching_container_ex" name="matching_container" namespace="matching" args="">
-            
-        </node_container>
     </group>
 </launch>
