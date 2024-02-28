@@ -190,5 +190,22 @@
             </composable_node>
             <!-- Section A end -->
         </node_container>
+        
+        <node_container pkg="rclcpp_components" exec="matching_container_ex" name="matching_container" namespace="matching" args="">
+            <node pkg="opencv_components" exec="opencv_mark_match" name="front_left_camera_matched" namespace="perception">
+                <remap from="sensors/cameras/front_left_camera_sensor/image_raw" to="/camera"/>
+            </node>
+      
+            <node pkg="opencv_components" exec="opencv_mark_match" name="front_right_camera_matched" namespace="perception">
+                <remap from="sensors/cameras/front_right_camera_sensor/image_raw" to="/camera"/>
+            </node>
+      
+            <node pkg="opencv_components" exec="opencv_mark_match" name="middle_right_camera_matched" namespace="perception">
+                <remap from="sensors/cameras/middle_right_camera_sensor/image_raw" to="/camera"/>
+            </node>
+
+            <node pkg="vrx_bridge" plugin="vrx_bridge::VRXBridgeComponent" name="vrx_bridge_component">
+            </node>
+        </node_container>
     </group>
 </launch>
