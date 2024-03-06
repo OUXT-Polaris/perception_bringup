@@ -73,19 +73,19 @@
             <!-- Section A end -->
 
             <composable_node pkg="opencv_components" exec="opencv_mark_match" name="front_left_camera_matched" namespace="perception">
+                <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <remap from="sensors/cameras/front_left_camera_sensor/image_raw" to="/camera"/>
             </composable_node>
       
             <composable_node pkg="opencv_components" exec="opencv_mark_match" name="front_right_camera_matched" namespace="perception">
+                <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <remap from="sensors/cameras/front_right_camera_sensor/image_raw" to="/camera"/>
             </composable_node>
       
             <composable_node pkg="opencv_components" exec="opencv_mark_match" name="middle_right_camera_matched" namespace="perception">
+                <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <remap from="sensors/cameras/middle_right_camera_sensor/image_raw" to="/camera"/>
-            </composable_node>
-
-            <param name="use_sim_time" value="$(var use_sim_time)"/>
-
+            </composable_node>            
         </node_container>
     </group>
 
