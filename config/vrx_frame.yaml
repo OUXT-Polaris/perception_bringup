@@ -1,0 +1,4 @@
+/**:
+  ros__parameters:
+      output_frame_id: "wamv/wamv/base_link"
+      visualize_frame_id : "wamv/wamv/base_link"

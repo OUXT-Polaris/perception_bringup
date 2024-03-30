@@ -29,6 +29,7 @@
             <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsTransformComponent" name="points_transform_node" namespace="perception/front_lidar">
                 <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <param from="$(find-pkg-share perception_bringup)/config/points_transform/front_lidar_points_transform.yaml"/>
+                <param from="$(find-pkg-share perception_bringup)/config/vrx_frame.yaml"/>
             </composable_node>
 
             <!-- Points concat -->
@@ -42,6 +43,7 @@
             <composable_node pkg="scan_segmentation" plugin="scan_segmentation::ScanSegmentationComponent" name="scan_segmentation_node" namespace="perception">
                 <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <param from="$(find-pkg-share perception_bringup)/config/scan_segmentation.yaml"/>
+                <param from="$(find-pkg-share perception_bringup)/config/vrx_frame.yaml"/>
             </composable_node>
 
             <composable_node pkg="pcl_apps" plugin="pcl_apps::CropHullFilterComponent" name="crop_hull_filter_node" namespace="perception">
@@ -168,7 +170,7 @@
             <!-- Points concat -->
             <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsConcatenateComponent" name="points_concatenate_node" namespace="perception">
                 <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param from="$(find-pkg-share perception_bringup)/config/points_transform/points_concatenate.yaml"/>
+                <param from="$(find-pkg-share perception_bringup)/config/points_concatenate.yaml"/>
             </composable_node>
 
             <!-- Section A start -->
