@@ -21,15 +21,29 @@
             </composable_node>
 
             <!-- Radius outlier removal -->
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::RadiusOutlierRemovalComponent" name="radius_outlier_removal_node" namespace="perception/front_lidar">
+            <composable_node pkg="pcl_apps" plugin="pcl_apps::RadiusOutlierRemovalComponent" name="radius_outlier_removal_node" namespace="perception/left_lidar">
                 <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/radius_outlier_removal/front_lidar_radius_outlier_removal.yaml"/>
-                <remap from="/sensing/front_lidar/points_raw" to="/wamv/sensors/lidars/lidar_wamv_sensor/points"/>
+                <param from="$(find-pkg-share perception_bringup)/config/radius_outlier_removal/left_lidar_radius_outlier_removal.yaml"/>
+                <remap from="/sensing/left_lidar/points_raw" to="/wamv/sensors/lidars/left_lidar/points"/>
+            </composable_node>
+
+            <composable_node pkg="pcl_apps" plugin="pcl_apps::RadiusOutlierRemovalComponent" name="radius_outlier_removal_node" namespace="perception/right_lidar">
+                <param name="use_sim_time" value="$(var use_sim_time)"/>
+                <param name="use_intra_process_comms" value="true"/>
+                <param from="$(find-pkg-share perception_bringup)/config/radius_outlier_removal/right_lidar_radius_outlier_removal.yaml"/>
+                <remap from="/sensing/right_lidar/points_raw" to="/wamv/sensors/lidars/right_lidar/points"/>
             </composable_node>
 
             <!-- Points transform -->
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsTransformComponent" name="points_transform_node" namespace="perception/front_lidar">
+            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsTransformComponent" name="points_transform_node" namespace="perception/left_lidar">
+                <param name="use_sim_time" value="$(var use_sim_time)"/>
+                <param name="use_intra_process_comms" value="true"/>
+                <param from="$(find-pkg-share perception_bringup)/config/points_transform/left_lidar_points_transform.yaml"/>
+                <param from="$(find-pkg-share perception_bringup)/config/vrx_frame.yaml"/>
+            </composable_node>
+
+            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsTransformComponent" name="points_transform_node" namespace="perception/right_lidar">
                 <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <param name="use_intra_process_comms" value="true"/>
                 <param from="$(find-pkg-share perception_bringup)/config/points_transform/front_lidar_points_transform.yaml"/>
@@ -37,11 +51,10 @@
             </composable_node>
 
             <!-- Points concat -->
-            <composable_node pkg="topic_tools" plugin="topic_tools::RelayNode" name="points_concatenate_node" namespace="perception">
+            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsConcatenateComponent" name="points_concatenate_node" namespace="perception">
                 <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <param name="use_intra_process_comms" value="true"/>
-                <param name="input_topic" value="front_lidar/points_transform_node/output"/>
-                <param name="output_topic" value="points_concatenate_node/output"/>
+                <param from="$(find-pkg-share perception_bringup)/config/points_concatenate_vrx.yaml"/>
             </composable_node>
 
             <!-- Section A start -->
