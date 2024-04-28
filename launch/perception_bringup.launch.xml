@@ -56,7 +56,23 @@
             <remap from="input1" to="/perception/right_lidar/points_transform_node/output"/>
         </composable_node>
 
-        <!-- Section A start -->
+       <!-- Crop Box -->
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::CropBoxFilterComponent" name="crop_box_node" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/crop_box_filter.yaml"/>
+            <remap from="/perception/crop_box_node/points" to="/perception/points_concatenate_node/output"/>
+            <remap from="/perception/crop_box_node/points_filtered" to="/perception/crop_box_node/output"/>
+        </composable_node>
+
+        <!-- Pointcloud to laserscan -->
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudToLaserScanComponent" name="pointcloud_to_laserscan_node" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <remap from="input" to="crop_box_node/output"/>
+            <remap from="output" to="pointcloud_to_laserscan_node/output"/>
+        </composable_node>
+
         <composable_node pkg="scan_segmentation" plugin="scan_segmentation::ScanSegmentationComponent" name="scan_segmentation_node" namespace="perception">
             <param name="use_sim_time" value="$(var use_sim_time)"/>
             <param name="use_intra_process_comms" value="true"/>
@@ -69,13 +85,6 @@
             <param name="use_intra_process_comms" value="true"/>
             <remap from="points" to="points_concatenate_node/output"/>
             <remap from="polygon" to="scan_segmentation_node/polygon"/>
-        </composable_node>
-
-        <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudToLaserScanComponent" name="pointcloud_to_laserscan_node" namespace="perception">
-            <param name="use_sim_time" value="$(var use_sim_time)"/>
-            <param name="use_intra_process_comms" value="true"/>
-            <remap from="input" to="points_concatenate_node/output"/>
-            <remap from="output" to="pointcloud_to_laserscan_node/output"/>
         </composable_node>
 
         <composable_node pkg="robotx_costmap_calculator" plugin="robotx_costmap_calculator::CostmapCalculatorComponent" name="costmap_calculator_node" namespace="perception">
@@ -95,7 +104,6 @@
             <param name="use_intra_process_comms" value="true"/>
             <param from="$(find-pkg-share perception_bringup)/config/costmap/costmap_interpolation.yaml"/>
         </composable_node>
-        <!-- Section A end -->
 
         <composable_node pkg="opencv_components" plugin="opencv_components::OpenCVMatchComponent" name="mark_match" namespace="perception/front_left_camera_sensor">
             <param name="use_sim_time" value="$(var use_sim_time)"/>

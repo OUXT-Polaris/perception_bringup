@@ -248,7 +248,7 @@ def getCropBoxFilterComponent(lidar_name):
     config_directory = os.path.join(
         ament_index_python.packages.get_package_share_directory('perception_bringup'),
         'config')
-    param_config = os.path.join(config_directory, 'costmap', 'crop_box_filter.yaml')
+    param_config = os.path.join(config_directory, 'crop_box_filter.yaml')
     with open(param_config, 'r') as f:
         params = yaml.safe_load(f)['crop_box_filter_node']['ros__parameters']
     component = ComposableNode(
