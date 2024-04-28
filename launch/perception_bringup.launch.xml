@@ -103,19 +103,19 @@
             <composable_node pkg="opencv_components" plugin="opencv_components::OpenCVMatchComponent" name="mark_match" namespace="perception/front_left_camera_sensor">
                 <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <param name="use_intra_process_comms" value="true"/>
-                <remap from="camera" to="/sensors/cameras/front_left_camera_sensor/image_raw"/>
+                <remap from="camera" to="/wamv/sensors/cameras/front_left_camera_sensor/image_raw"/>
             </composable_node>
       
             <composable_node pkg="opencv_components" plugin="opencv_components::OpenCVMatchComponent" name="mark_match" namespace="perception/front_right_camera_sensor">
                 <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <param name="use_intra_process_comms" value="true"/>
-                <remap from="camera" to="/sensors/cameras/front_right_camera_sensor/image_raw"/>
+                <remap from="camera" to="/wamv/sensors/cameras/front_right_camera_sensor/image_raw"/>
             </composable_node>
       
             <composable_node pkg="opencv_components" plugin="opencv_components::OpenCVMatchComponent" name="mark_match" namespace="perception/ball_shooter_camera_sensor">
                 <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <param name="use_intra_process_comms" value="true"/>
-                <remap from="camera" to="/sensors/cameras/ball_shooter_camera_sensor/image_raw"/>
+                <remap from="camera" to="/wamv/sensors/cameras/ball_shooter_camera_sensor/image_raw"/>
             </composable_node>            
         </node_container>
     </group>
