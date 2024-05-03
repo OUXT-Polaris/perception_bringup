@@ -1,0 +1,45 @@
+<launch>
+    <arg name="use_sim_time" default="false"/>
+    
+    <node_container pkg="rclcpp_components" exec="component_container_mt" name="sensing_container" namespace="sensing" args="">
+        <!-- Velodyne Driver -->
+        <composable_node pkg="velodyne_driver" plugin="velodyne_driver::VelodyneDriver" name="driver_node" namespace="sensing/left_lidar">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <remap from="velodyne_packets" to="/wamv/sensors/lidars/left_lidar_sensor/velodyne_packets"/>
+            <param from="$(find-pkg-share perception_bringup)/config/velodyne/driver.yaml"/>
+            <param name="device_ip" value="192.168.0.200"/> <!-- This value should be defined in the near future -->
+        </composable_node>
+
+        <composable_node pkg="velodyne_driver" plugin="velodyne_driver::VelodyneDriver" name="driver_node" namespace="sensing/right_lidar">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <remap from="velodyne_packets" to="/wamv/sensors/lidars/right_lidar_sensor/velodyne_packets"/>
+            <param from="$(find-pkg-share perception_bringup)/config/velodyne/driver.yaml"/>
+            <param name="device_ip" value="192.168.0.201"/> <!-- This value should be defined in the near future -->
+        </composable_node>
+
+        <!-- Camera Driver-->
+        <composable_node pkg="v4l2_camera" plugin="v4l2_camera::V4L2Camera" name="driver_node" namespace="sensing/front_left_camera">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <remap from="image_raw" to="/wamv/sensors/cameras/front_left_camera_sensor/image_raw"/>
+            <remap from="camera_info" to="/wamv/sensors/cameras/front_left_camera_sensor/camera_info"/>
+            <remap from="image_raw/compressed" to="/wamv/sensors/cameras/front_left_camera_sensor/image_raw/compressed"/>
+            <param from="$(find-pkg-share perception_bringup)/config/camera/driver.yaml"/>
+            <param name="camera_frame_id" value="wamv/front_left_camera_link_optical"/>
+            <param name="video_device" value="/dev/video0"/> <!-- This value should be defined in the near future -->
+        </composable_node>
+
+        <composable_node pkg="v4l2_camera" plugin="v4l2_camera::V4L2Camera" name="driver_node" namespace="sensing/front_right_camera">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <remap from="image_raw" to="/wamv/sensors/cameras/front_right_camera_sensor/image_raw"/>
+            <remap from="camera_info" to="/wamv/sensors/cameras/front_right_camera_sensor/camera_info"/>
+            <remap from="image_raw/compressed" to="/wamv/sensors/cameras/front_right_camera_sensor/image_raw/compressed"/>
+            <param from="$(find-pkg-share perception_bringup)/config/camera/driver.yaml"/>
+            <param name="camera_frame_id" value="wamv/front_right_camera_link_optical"/>
+            <param name="video_device" value="/dev/video1"/> <!-- This value should be defined in the near future -->
+        </composable_node>
+    </node_container>
+</launch>

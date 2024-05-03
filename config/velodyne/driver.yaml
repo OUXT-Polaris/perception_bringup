@@ -1,0 +1,5 @@
+/**:
+  ros__parameters:
+    model: VLP16
+    port: 2368
+    
