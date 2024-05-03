@@ -1,6 +1,6 @@
 <launch>
     <arg name="use_sim_time" default="false"/>
-
+    
     <node_container pkg="rclcpp_components" exec="component_container_mt" name="perception_container" namespace="perception" args="">
         <!-- Point cloud projection -->
         <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudProjectionComponent" name="pointcloud_projection_node" namespace="perception/front_left_camera">
