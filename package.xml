@@ -8,15 +8,23 @@
   <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <depend>util-linux</depend>
 
-  <exec_depend>v4l2_camera</exec_depend>
-  <exec_depend>scan_segmentation</exec_depend>
-  <exec_depend>image_processing_utils</exec_depend>
-  <exec_depend>velodyne_pointcloud</exec_depend>
-  <exec_depend>velodyne_driver</exec_depend>
-  <exec_depend>topic_tools</exec_depend>
-  <exec_depend>rosbag2_transport</exec_depend>
+  <depend>ament_cmake_auto</depend>
+  <depend>shared_queues_vendor</depend>
+  <depend>cv_bridge</depend>
+  <depend>diagnostic_msgs</depend>
+  <depend>image_processing_utils</depend>
+  <depend>launch_composition</depend>
+  <depend>rclcpp</depend>
+  <depend>rosbag2_transport</depend>
+  <depend>scan_segmentation</depend>
+  <depend>topic_tools</depend>
+  <depend>util-linux</depend>
+  <depend>v4l2_camera</depend>
+  <depend>velodyne_driver</depend>
+  <depend>velodyne_msgs</depend>
+  <depend>velodyne_pointcloud</depend>
+  <depend>image_transport</depend>
 
   <test_depend>ouxt_lint_common</test_depend>
 
