@@ -1,253 +1,135 @@
 <launch>
     <arg name="use_sim_time" default="false"/>
-    <arg name="vrx" default="true"/>
+    
+    <node_container pkg="rclcpp_components" exec="component_container_mt" name="perception_container" namespace="perception" args="">
+        <!-- Point cloud projection -->
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudProjectionComponent" name="pointcloud_projection_node" namespace="perception/front_left_camera">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/pointcloud_projection/front_left_camera_pointcloud_projection.yaml"/>
+            <remap from="/wamv/sensors/cameras/front_left_camera_sensor/image_raw" to="/perception/front_left_camera/image_raw"/>
+        </composable_node>
 
-    <!-- VRX restructs number of sensors -->
-    <group if="$(var vrx)">
-        <node_container pkg="rclcpp_components" exec="component_container_mt" name="perception_container" namespace="perception" args="">
-            <!-- Point cloud projection -->
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudProjectionComponent" name="pointcloud_projection_node" namespace="perception/front_left_camera">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/pointcloud_projection/front_left_camera_pointcloud_projection.yaml"/>
-                <remap from="/wamv/sensors/cameras/front_left_camera_sensor/image_raw" to="/perception/front_left_camera/image_raw"/>
-            </composable_node>
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudProjectionComponent" name="pointcloud_projection_node" namespace="perception/front_right_camera">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/pointcloud_projection/front_right_camera_pointcloud_projection.yaml"/>
+            <remap from="/wamv/sensors/cameras/front_right_camera_sensor/image_raw" to="/perception/front_right_camera/image_raw"/>
+        </composable_node>
 
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudProjectionComponent" name="pointcloud_projection_node" namespace="perception/front_right_camera">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/pointcloud_projection/front_right_camera_pointcloud_projection.yaml"/>
-                <remap from="/wamv/sensors/cameras/front_right_camera_sensor/image_raw" to="/perception/front_right_camera/image_raw"/>
-            </composable_node>
+        <!-- Radius outlier removal -->
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::RadiusOutlierRemovalComponent" name="radius_outlier_removal_node" namespace="perception/left_lidar">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/radius_outlier_removal/left_lidar_radius_outlier_removal.yaml"/>
+            <remap from="/sensing/left_lidar/points_raw" to="/wamv/sensors/lidars/left_lidar_sensor/points"/>
+        </composable_node>
 
-            <!-- Radius outlier removal -->
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::RadiusOutlierRemovalComponent" name="radius_outlier_removal_node" namespace="perception/front_lidar">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/radius_outlier_removal/front_lidar_radius_outlier_removal.yaml"/>
-                <remap from="/sensing/front_lidar/points_raw" to="/wamv/sensors/lidars/lidar_wamv_sensor/points"/>
-            </composable_node>
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::RadiusOutlierRemovalComponent" name="radius_outlier_removal_node" namespace="perception/right_lidar">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/radius_outlier_removal/right_lidar_radius_outlier_removal.yaml"/>
+            <remap from="/sensing/right_lidar/points_raw" to="/wamv/sensors/lidars/right_lidar_sensor/points"/>
+        </composable_node>
 
-            <!-- Points transform -->
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsTransformComponent" name="points_transform_node" namespace="perception/front_lidar">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/points_transform/front_lidar_points_transform.yaml"/>
-                <param from="$(find-pkg-share perception_bringup)/config/vrx_frame.yaml"/>
-            </composable_node>
+        <!-- Points transform -->
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsTransformComponent" name="points_transform_node" namespace="perception/left_lidar">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/points_transform/left_lidar_points_transform.yaml"/>
+            <param from="$(find-pkg-share perception_bringup)/config/vrx_frame.yaml"/>
+        </composable_node>
 
-            <!-- Points concat -->
-            <composable_node pkg="topic_tools" plugin="topic_tools::RelayNode" name="points_concatenate_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param name="input_topic" value="front_lidar/points_transform_node/output"/>
-                <param name="output_topic" value="points_concatenate_node/output"/>
-            </composable_node>
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsTransformComponent" name="points_transform_node" namespace="perception/right_lidar">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/points_transform/front_lidar_points_transform.yaml"/>
+            <param from="$(find-pkg-share perception_bringup)/config/vrx_frame.yaml"/>
+        </composable_node>
 
-            <!-- Section A start -->
-            <composable_node pkg="scan_segmentation" plugin="scan_segmentation::ScanSegmentationComponent" name="scan_segmentation_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/scan_segmentation.yaml"/>
-                <param from="$(find-pkg-share perception_bringup)/config/vrx_frame.yaml"/>
-            </composable_node>
+        <!-- Points concat -->
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsConcatenateComponent" name="points_concatenate_node" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/points_concatenate_vrx.yaml"/>
+            <remap from="input0" to="/perception/left_lidar/points_transform_node/output"/>
+            <remap from="input1" to="/perception/right_lidar/points_transform_node/output"/>
+        </composable_node>
 
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::CropHullFilterComponent" name="crop_hull_filter_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <remap from="points" to="intensity_filter_node/output"/>
-                <remap from="polygon" to="scan_segmentation_node/polygon"/>
-            </composable_node>
 
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::IntensityFilterComponent" name="intensity_filter_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <remap from="points" to="points_concatenate_node/output"/>
-                <remap from="points_filtered" to="intensity_filter_node/output"/>
-            </composable_node>
+        <!-- Intensity Filter -->
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::IntensityFilterComponent" name="intensity_filter_node" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <remap from="points" to="points_concatenate_node/output"/>
+            <remap from="points_filtered" to="intensity_filter_node/output"/>
+        </composable_node>
 
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudToLaserScanComponent" name="pointcloud_to_laserscan_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <remap from="input" to="intensity_filter_node/output"/>
-                <remap from="output" to="pointcloud_to_laserscan_node/output"/>
-            </composable_node>
+       <!-- Crop Box -->
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::CropBoxFilterComponent" name="crop_box_node" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/crop_box_filter.yaml"/>
+            <remap from="/perception/crop_box_node/points" to="/perception/intensity_filter_node/output"/>
+            <remap from="/perception/crop_box_node/points_filtered" to="/perception/crop_box_node/output"/>
+        </composable_node>
 
-            <composable_node pkg="robotx_costmap_calculator" plugin="robotx_costmap_calculator::CostmapCalculatorComponent" name="costmap_calculator_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/costmap/costmap_calculator.yaml"/>
-            </composable_node>
+        <!-- Pointcloud to laserscan -->
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudToLaserScanComponent" name="pointcloud_to_laserscan_node" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <remap from="input" to="crop_box_node/output"/>
+            <remap from="output" to="pointcloud_to_laserscan_node/output"/>
+        </composable_node>
 
-            <composable_node pkg="robotx_costmap_calculator" plugin="robotx_costmap_calculator::CostmapFilterComponent" name="costmap_filter_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/costmap/costmap_filter.yaml"/>
-            </composable_node>
+        <composable_node pkg="scan_segmentation" plugin="scan_segmentation::ScanSegmentationComponent" name="scan_segmentation_node" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/scan_segmentation.yaml"/>
+            <param from="$(find-pkg-share perception_bringup)/config/vrx_frame.yaml"/>
+        </composable_node>
 
-            <composable_node pkg="robotx_costmap_calculator" plugin="robotx_costmap_calculator::CostmapInterpolationComponent" name="costmap_interpolation_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/costmap/costmap_interpolation.yaml"/>
-            </composable_node>
-            <!-- Section A end -->
+        <composable_node pkg="pcl_apps" plugin="pcl_apps::CropHullFilterComponent" name="crop_hull_filter_node" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <remap from="points" to="crop_box_node/output"/>
+            <remap from="polygon" to="scan_segmentation_node/polygon"/>
+        </composable_node>
 
-            <composable_node pkg="opencv_components" plugin="opencv_components::OpenCVMatchComponent" name="mark_match" namespace="perception/front_left_camera_sensor">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <remap from="camera" to="/wamv/sensors/cameras/front_left_camera_sensor/image_raw"/>
-            </composable_node>
-      
-            <composable_node pkg="opencv_components" plugin="opencv_components::OpenCVMatchComponent" name="mark_match" namespace="perception/front_right_camera_sensor">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <remap from="camera" to="/wamv/sensors/cameras/front_right_camera_sensor/image_raw"/>
-            </composable_node>
-      
-            <composable_node pkg="opencv_components" plugin="opencv_components::OpenCVMatchComponent" name="mark_match" namespace="perception/ball_shooter_camera_sensor">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <remap from="camera" to="/wamv/sensors/cameras/ball_shooter_camera_sensor/image_raw"/>
-            </composable_node>            
-        </node_container>
-    </group>
+        <composable_node pkg="robotx_costmap_calculator" plugin="robotx_costmap_calculator::CostmapCalculatorComponent" name="costmap_calculator_node" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/costmap/costmap_calculator.yaml"/>
+        </composable_node>
 
-    <!-- Launch with full sensor configuration -->
-    <group unless="$(var vrx)">
-        <node_container pkg="rclcpp_components" exec="component_container_mt" name="perception_container" namespace="perception" args="">
-            <!-- Point cloud projection -->
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudProjectionComponent" name="pointcloud_projection_node" namespace="perception/front_left_camera">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/pointcloud_projection/front_left_camera_pointcloud_projection.yaml"/>
-            </composable_node>
+        <composable_node pkg="robotx_costmap_calculator" plugin="robotx_costmap_calculator::CostmapFilterComponent" name="costmap_filter_node" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/costmap/costmap_filter.yaml"/>
+        </composable_node>
 
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudProjectionComponent" name="pointcloud_projection_node" namespace="perception/front_right_camera">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/pointcloud_projection/front_right_camera_pointcloud_projection.yaml"/>
-            </composable_node>
+        <composable_node pkg="robotx_costmap_calculator" plugin="robotx_costmap_calculator::CostmapInterpolationComponent" name="costmap_interpolation_node" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share perception_bringup)/config/costmap/costmap_interpolation.yaml"/>
+        </composable_node>
 
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudProjectionComponent" name="pointcloud_projection_node" namespace="perception/rear_left_camera">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/pointcloud_projection/rear_left_camera_pointcloud_projection.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudProjectionComponent" name="pointcloud_projection_node" namespace="perception/rear_right_camera">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/pointcloud_projection/rear_right_camera_pointcloud_projection.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudProjectionComponent" name="pointcloud_projection_node" namespace="perception/left_camera">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/pointcloud_projection/left_camera_pointcloud_projection.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudProjectionComponent" name="pointcloud_projection_node" namespace="perception/right_camera">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/pointcloud_projection/right_camera_pointcloud_projection.yaml"/>
-            </composable_node>
-
-            <!-- Radius outlier removal -->
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::RadiusOutlierRemovalComponent" name="radius_outlier_removal_node" namespace="perception/front_lidar">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/radius_outlier_removal/front_lidar_radius_outlier_removal.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::RadiusOutlierRemovalComponent" name="radius_outlier_removal_node" namespace="perception/rear_lidar">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/radius_outlier_removal/rear_lidar_radius_outlier_removal.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::RadiusOutlierRemovalComponent" name="radius_outlier_removal_node" namespace="perception/right_lidar">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/radius_outlier_removal/right_lidar_radius_outlier_removal.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::RadiusOutlierRemovalComponent" name="radius_outlier_removal_node" namespace="perception/left_lidar">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/radius_outlier_removal/left_lidar_radius_outlier_removal.yaml"/>
-            </composable_node>
-
-            <!-- Points transform -->
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsTransformComponent" name="points_transform_node" namespace="perception/front_lidar">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/points_transform/front_lidar_points_transform.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsTransformComponent" name="points_transform_node" namespace="perception/rear_lidar">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/points_transform/rear_lidar_points_transform.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsTransformComponent" name="points_transform_node" namespace="perception/right_lidar">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/points_transform/right_lidar_points_transform.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsTransformComponent" name="points_transform_node" namespace="perception/left_lidar">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/points_transform/left_lidar_points_transform.yaml"/>
-            </composable_node>
-
-            <!-- Points concat -->
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointsConcatenateComponent" name="points_concatenate_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/points_concatenate.yaml"/>
-            </composable_node>
-
-            <!-- Section A start -->
-            <composable_node pkg="scan_segmentation" plugin="scan_segmentation::ScanSegmentationComponent" name="scan_segmentation_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/scan_segmentation.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::CropHullFilterComponent" name="crop_hull_filter_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <remap from="points" to="points_concatenate_node/output"/>
-                <remap from="polygon" to="scan_segmentation_node/polygon"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudToLaserScanComponent" name="pointcloud_to_laserscan_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <remap from="input" to="points_concatenate_node/output"/>
-                <remap from="output" to="pointcloud_to_laserscan_node/output"/>
-            </composable_node>
-
-            <composable_node pkg="robotx_costmap_calculator" plugin="robotx_costmap_calculator::CostmapCalculatorComponent" name="costmap_calculator_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/costmap/costmap_calculator.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="robotx_costmap_calculator" plugin="robotx_costmap_calculator::CostmapFilterComponent" name="costmap_filter_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/costmap/costmap_filter.yaml"/>
-            </composable_node>
-
-            <composable_node pkg="robotx_costmap_calculator" plugin="robotx_costmap_calculator::CostmapInterpolationComponent" name="costmap_interpolation_node" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <param from="$(find-pkg-share perception_bringup)/config/costmap/costmap_interpolation.yaml"/>
-            </composable_node>
-            <!-- Section A end -->
-        </node_container>
-    </group>
+        <composable_node pkg="opencv_components" plugin="opencv_components::OpenCVMatchComponent" name="mark_match" namespace="perception/front_left_camera_sensor">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <remap from="camera" to="/sensors/cameras/front_left_camera_sensor/image_raw"/>
+        </composable_node>
+    
+        <composable_node pkg="opencv_components" plugin="opencv_components::OpenCVMatchComponent" name="mark_match" namespace="perception/front_right_camera_sensor">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <remap from="camera" to="/sensors/cameras/front_right_camera_sensor/image_raw"/>
+        </composable_node>
+    
+        <composable_node pkg="opencv_components" plugin="opencv_components::OpenCVMatchComponent" name="mark_match" namespace="perception/ball_shooter_camera_sensor">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <remap from="camera" to="/sensors/cameras/ball_shooter_camera_sensor/image_raw"/>
+        </composable_node>            
+    </node_container>
 </launch>

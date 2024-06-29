@@ -1,6 +1,7 @@
 perception:
   costmap_calculator_node:
     ros__parameters:
+      points_raw_topic: /perception/crop_box_node/output
       resolution: 0.2
       num_grids: 100
       scan_buffer_size: 2
