@@ -59,18 +59,18 @@
                 <remap from="polygon" to="scan_segmentation_node/polygon"/>
             </composable_node>
 
+            <composable_node pkg="pcl_apps" plugin="pcl_apps::IntensityFilterComponent" name="intensity_filter_node" namespace="perception">
+                <param name="use_sim_time" value="$(var use_sim_time)"/>
+                <param name="use_intra_process_comms" value="true"/>
+                <remap from="points" to="points_concatenate_node/output"/>
+                <remap from="points_filtered" to="intensity_filter_node/output"/>
+            </composable_node>
+
             <composable_node pkg="pcl_apps" plugin="pcl_apps::PointCloudToLaserScanComponent" name="pointcloud_to_laserscan_node" namespace="perception">
                 <param name="use_sim_time" value="$(var use_sim_time)"/>
                 <param name="use_intra_process_comms" value="true"/>
-                <remap from="input" to="points_concatenate_node/output"/>
+                <remap from="input" to="intensity_filter_node/output"/>
                 <remap from="output" to="pointcloud_to_laserscan_node/output"/>
-            </composable_node>
-
-            <composable_node pkg="pcl_apps" plugin="pcl_apps::IntensityFilterComponent" name="intensity_filter_component" namespace="perception">
-                <param name="use_sim_time" value="$(var use_sim_time)"/>
-                <param name="use_intra_process_comms" value="true"/>
-                <remap from="input" to="points_concatenate_node/output"/>
-                <remap from="output" to="intensity_filter_node/output"/>
             </composable_node>
 
             <composable_node pkg="robotx_costmap_calculator" plugin="robotx_costmap_calculator::CostmapCalculatorComponent" name="costmap_calculator_node" namespace="perception">
