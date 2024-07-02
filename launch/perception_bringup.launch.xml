@@ -121,6 +121,15 @@
             <param name="use_sim_time" value="$(var use_sim_time)"/>
             <param name="use_intra_process_comms" value="true"/>
             <remap from="camera" to="/sensors/cameras/ball_shooter_camera_sensor/image_raw"/>
-        </composable_node>            
+        </composable_node>    
+
+        <composable_node pkg="point_painting" plugin="point_painting::PointPaintingFusionComponent" name="point_painting" namespace="perception">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="use_intra_process_comms" value="true"/>
+            <param from="$(find-pkg-share point_painting)/config/pointpainting_config.yaml"/>
+        </composable_node>        
     </node_container>
+
+    <include file="$(find-pkg-share detic_onnx_ros2)/detic_onnx_ros2.launch.xml">
+    </include>
 </launch>
