@@ -132,6 +132,6 @@
 
     <include file="$(find-pkg-share detic_onnx_ros2)/detic_onnx_ros2.launch.xml">
         <arg name="image_raw" value="/sensors/cameras/front_left_camera_sensor/image_raw"/>    
-        <!-- <param name="detection_width" value="$(var detection_width)"/> -->
+        <!-- <arg name="detection_width" value="$(var detection_width)"/> -->
     </include>
 </launch>
