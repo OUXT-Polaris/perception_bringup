@@ -130,8 +130,13 @@
         </composable_node>        
     </node_container>
 
-    <include file="$(find-pkg-share detic_onnx_ros2)/detic_onnx_ros2.launch.xml">
-        <arg name="image_raw" value="/sensors/cameras/front_left_camera_sensor/image_raw"/>    
-        <!-- <arg name="detection_width" value="$(var detection_width)"/> -->
-    </include>
+    <group>
+        <push_ros_namespace namespace="perception" />
+        <include file="$(find-pkg-share detic_onnx_ros2)/detic_onnx_ros2.launch.xml">
+            <arg name="input_topic" value="/wamv/sensors/cameras/front_left_camera_sensor/optical/image_raw"/>    
+            <arg name="detection_width" value="1080"/> 
+        </include>
+    </group>
+    
+    
 </launch>
