@@ -31,3 +31,13 @@ repositories:
     type: git
     url: https://github.com/OUXT-Polaris/ouxt_common.git
     version: master
+
+  point_painting:
+    type: git
+    url: https://github.com/OUXT-Polaris/point_painting
+    version: master
+  
+  detic_onnx_ros2:
+    type: git
+    url: https://github.com/OUXT-Polaris/detic_onnx_ros2
+    version: master
