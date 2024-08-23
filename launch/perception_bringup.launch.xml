@@ -63,6 +63,7 @@
             <param name="use_intra_process_comms" value="true"/>
             <remap from="points" to="points_concatenate_node/output"/>
             <remap from="points_filtered" to="intensity_filter_node/output"/>
+            <param from="$(find-pkg-share perception_bringup)/config/intensityfilter.yaml"/>
         </composable_node>
 
        <!-- Crop Box -->
