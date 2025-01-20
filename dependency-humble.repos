@@ -23,6 +23,22 @@ repositories:
     type: git
     url: https://github.com/OUXT-Polaris/pcl_apps.git
     version: master
+  pcl_type_adapter:
+    type: git
+    url: https://github.com/OUXT-Polaris/pcl_type_adapter
+    version: master
+  perception_msgs:
+    type: git
+    url: https://github.com/OUXT-Polaris/perception_msgs.git
+    version: master
+  point_painting:
+    type: git
+    url: https://github.com/OUXT-Polaris/point_painting
+    version: master
+  grid_map_type_adapter:
+    type: git
+    url: https://github.com/OUXT-Polaris/grid_map_type_adapter.git
+    version: master
   message_synchronizer:
     type: git
     url: https://github.com/OUXT-Polaris/message_synchronizer.git
@@ -31,16 +47,7 @@ repositories:
     type: git
     url: https://github.com/OUXT-Polaris/ouxt_common.git
     version: master
-
-  point_painting:
-    type: git
-    url: https://github.com/OUXT-Polaris/point_painting
-    version: master
   detic_onnx_ros2:
     type: git
     url: https://github.com/OUXT-Polaris/detic_onnx_ros2
-    version: master
-  pcl_type_adapter:
-    type: git
-    url: https://github.com/OUXT-Polaris/pcl_type_adapter
     version: master
