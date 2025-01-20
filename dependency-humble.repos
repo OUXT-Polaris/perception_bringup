@@ -36,8 +36,11 @@ repositories:
     type: git
     url: https://github.com/OUXT-Polaris/point_painting
     version: master
-  
   detic_onnx_ros2:
     type: git
     url: https://github.com/OUXT-Polaris/detic_onnx_ros2
+    version: master
+  pcl_type_adapter:
+    type: git
+    url: https://github.com/OUXT-Polaris/pcl_type_adapter
     version: master
