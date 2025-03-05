@@ -12,7 +12,8 @@
             <remap from="image_raw" to="/wamv/sensors/cameras/$(var prefix)_camera_sensor/image_raw"/>
             <remap from="camera_info" to="/wamv/sensors/cameras/$(var prefix)_camera_sensor/camera_info"/>
             <remap from="image_raw/compressed" to="/wamv/sensors/cameras/$(var prefix)_camera_sensor/image_raw/compressed"/>
-            <param from="$(find-pkg-share perception_bringup)/config/camera/driver.yaml"/>
+            <!-- <param from="$(find-pkg-share perception_bringup)/config/camera/driver.yaml"/> -->
+            <param name="camera_info_url" value="file://$(find-pkg-share perception_bringup)/config/camera/c1_camera.yaml"/>
             <param name="camera_frame_id" value="wamv/$(var prefix)_camera_link_optical"/>
             <param name="video_device" value="/dev/video0"/> <!-- This value should be defined in the near future -->
         </composable_node>
