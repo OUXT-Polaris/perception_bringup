@@ -17,6 +17,7 @@
   <exec_depend>velodyne_driver</exec_depend>
   <exec_depend>topic_tools</exec_depend>
   <exec_depend>rosbag2_transport</exec_depend>
+  <exec_depend>nebula_ros</exec_depend>
 
   <test_depend>ouxt_lint_common</test_depend>
 
