@@ -15,7 +15,7 @@
   <joint name="front_velodyne_to_camera_joint" type="fixed">
     <parent link="front_velodyne"/>
     <child link="front_camera_link"/>
-    <origin rpy="3.141592653589793 0 0" xyz="0 0 0"/>
+    <origin rpy="3.141592653589793 0 0" xyz="0.03 0 0"/>
   </joint>
   <joint name="front_camera_to_camera_optical_joint" type="fixed">
     <parent link="front_camera_link"/>
