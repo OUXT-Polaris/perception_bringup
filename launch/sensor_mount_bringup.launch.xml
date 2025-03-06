@@ -1,6 +1,8 @@
 <launch>
     <arg name="use_sim_time" default="false"/>
     <arg name="prefix" default="front"/>
+    <arg name="model" default="$(find-pkg-share perception_bringup)/config/urdf/miniv_sensors.urdf"/>
+    <arg name="publish_tf" default="true"/>
 
     <arg name="vlp16_config_file" default="$(find-pkg-share perception_bringup)/config/velodyne/$(var prefix)_lidar_nebula_driver.yaml"/>
 
@@ -29,4 +31,10 @@
             <remap from="aw_points" to="/wamv/sensors/lidars/$(var prefix)_lidar_sensor/aw_points"/>
         </composable_node>
     </node_container>
+
+    <group if="$(var publish_tf)">
+        <node name="robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description" value="$(command 'xacro $(var model)')"/>
+        </node>
+    </group>
 </launch>
