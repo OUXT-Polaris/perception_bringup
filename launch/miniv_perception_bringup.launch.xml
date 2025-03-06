@@ -1,0 +1,7 @@
+<launch>
+    <arg name="use_sim_time" default="false"/>
+
+    <include file="$(find-pkg-share perception_bringup)/launch/sensor_mount_bringup.launch.xml">
+        <arg name="use_sim_time" value="$(var use_sim_time)"/>
+    </include>
+</launch>

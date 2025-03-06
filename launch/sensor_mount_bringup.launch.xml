@@ -32,17 +32,6 @@
         </composable_node>
     </node_container>
 
-    <node_container pkg="rclcpp_components" exec="component_container_mt" name="perception_container" namespace="perception" args="perception/$(var prefix)_sensor">
-        <!-- Radius outlier removal -->
-        <composable_node pkg="pcl_apps" plugin="pcl_apps::RadiusOutlierRemovalComponent" name="radius_outlier_removal_node" namespace="perception/$(var prefix)_velodyne">
-            <param name="use_sim_time" value="$(var use_sim_time)"/>
-            <param name="use_intra_process_comms" value="true"/>
-            <param name="input_topic" value="/wamv/sensors/lidars/$(var prefix)_lidar_sensor/velodyne_points"/>
-            <param name="search_radius" value="1.0"/>
-            <param name="min_neighbors_in_search_radius" value="3"/>
-        </composable_node>
-    </node_container>
-
     <group if="$(var publish_tf)">
         <node name="robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher">
         <param name="robot_description" value="$(command 'xacro $(var model)')"/>
