@@ -8,7 +8,7 @@
     launch_hw: true
     setup_sensor: true
     udp_only: false
-    frame_id: velodyne
+    frame_id: front_velodyne
     advanced_diagnostics: false
     diag_span: 1000
     calibration_file: $(find-pkg-share nebula_decoders)/calibration/velodyne/VLP16.yaml

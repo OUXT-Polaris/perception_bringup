@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="sensor_mount">
+
+  <xacro:property name="pi" value="3.14159265359"/>
+
+  <xacro:macro name="sensor_mount" params="prefix:=sensor">
+
+    <link name="${prefix}_velodyne">
+    </link>
+
+    <link name="${prefix}_camera_link">
+    </link>
+
+    <link name="${prefix}_camera_optical_link">
+    </link>
+
+    <joint name="${prefix}_velodyne_to_camera_joint" type="fixed">
+      <parent link="${prefix}_velodyne"/>
+      <child link="${prefix}_camera_link"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="${prefix}_camera_to_camera_optical_joint" type="fixed">
+      <parent link="${prefix}_camera_link"/>
+      <child link="${prefix}_camera_optical_link"/>
+      <origin xyz="0 0 0" rpy="-${pi/2} 0 -${pi/2}"/>
+    </joint>
+
+    <joint name="${prefix}_base_link_to_velodyne_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="${prefix}_velodyne"/>
+      <origin xyz="0.2 0 0.1" rpy="0 0 0"/>
+    </joint>
+
+  </xacro:macro>
+
+  <xacro:property name="sensor_prefix" value="front_sensor"/>
+  <xacro:sensor_mount prefix="${sensor_prefix}"/>
+
+</robot>
