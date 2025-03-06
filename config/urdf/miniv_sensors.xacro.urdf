@@ -1,4 +1,6 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="sensor_mount">
     <xacro:include filename="sensor_mount.xacro.urdf"/>
-    <xacro:sensor_mount prefix="front"/>
+    
+    <xacro:property name="sensor_prefix" value="front"/>
+    <xacro:sensor_mount prefix="${sensor_prefix}"/>
 </robot>
