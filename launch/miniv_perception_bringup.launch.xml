@@ -20,6 +20,8 @@
         </composable_node>
     </node_container>
 
+    <executable cmd="/home/ubuntu/ouxt_automation/robotx_ws/src/perception/perception_bringup/launch/logger.sh" output="screen" shell="true" />
+
     <!-- <group>
         <push_ros_namespace namespace="perception" />
         <include file="$(find-pkg-share detic_onnx_ros2)/detic_onnx_ros2.launch.xml">
