@@ -19,4 +19,12 @@
             <param from="$(find-pkg-share perception_bringup)/config/scan_segmentation.yaml"/>
         </composable_node>
     </node_container>
+
+    <!-- <group>
+        <push_ros_namespace namespace="perception" />
+        <include file="$(find-pkg-share detic_onnx_ros2)/detic_onnx_ros2.launch.xml">
+            <arg name="input_topic" value="/wamv/sensors/cameras/front_camera_sensor/image_raw"/>    
+            <arg name="detection_width" value="1080"/> 
+        </include>
+    </group> -->
 </launch>
