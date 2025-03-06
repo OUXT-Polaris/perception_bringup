@@ -8,4 +8,4 @@ perception:
             distance_ratio : 2.0
             theta_threashold : 0.3141592653589793
             output_frame_id : "base_link"
-            visualize_frame_id : "map"
+            visualize_frame_id : "base_link"
